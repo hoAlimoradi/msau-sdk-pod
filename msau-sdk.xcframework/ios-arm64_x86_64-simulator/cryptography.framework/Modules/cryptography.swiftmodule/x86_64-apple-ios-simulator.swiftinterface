@@ -91,7 +91,7 @@ public protocol Server {
   @objc deinit
 }
 public protocol MsauIssueCertResultProtocol {
-  func observerIssueCertResult(input: Swift.String, completion: @escaping (cryptography.IssueCertResult) -> Swift.Void)
+  func observerIssueCertResult(issueCertResult: cryptography.IssueCertResultModel)
 }
 public enum HTTPUpgradeError : Swift.Error {
   case notAnUpgrade(Swift.Int, [Swift.String : Swift.String])
@@ -138,6 +138,8 @@ extension Foundation.URL {
   public func initializeCrashReporter()
   public func initializeNetworkLoggerViewController()
   public func initialize(window: UIKit.UIWindow, config: cryptography.MSSUIKitConfig, retryCount: Swift.Int = 3, completion: @escaping (Swift.Result<cryptography.InitializeStatusResult, any Swift.Error>) -> Swift.Void)
+  public func setDefaultNationalCode(_ nationalNumber: Swift.String)
+  public func setDefaultPhoneNumber(_ phoneNumber: Swift.String)
   public func setPaymentUrlSchema(url: Foundation.URL?)
   public func setSocketMessage(content: Swift.String)
   public func showMSAUUI(host: UIKit.UIViewController) throws
@@ -444,6 +446,19 @@ extension UIKit.UIFont {
 }
 extension UIKit.UIFont {
   public static func registerCustomFontsIfNeeded()
+}
+public enum IssueCertStepResultModel : Swift.String {
+  case payment
+  case initial
+  case keyGenerated
+  case csrSigned
+  case certCreated
+  case certImported
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
 }
 public protocol _UInt8TypeCryptoSwift {
 }
@@ -1979,9 +1994,6 @@ public struct CryptoSwiftECB : cryptography.CryptoSwiftBlockMode {
   public init()
   public func worker(blockSize: Swift.Int, cipherOperation: @escaping cryptography.CipherOperationOnBlock, encryptionOperation: @escaping cryptography.CipherOperationOnBlock) throws -> any cryptography.CryptoSwiftCipherModeWorker
 }
-public struct IssueCertResult {
-  public init(error: Swift.String?, trackingCode: Swift.String?)
-}
 public struct EkycResult {
   public init(error: Swift.String?, trackingCode: Swift.String?)
 }
@@ -2328,7 +2340,7 @@ extension cryptography.X509Certificate {
 public class MSSUIKitConfigBuilder {
   public init()
   public var pageBackgroundResId: UIKit.UIColor
-  public func setShowSplash(indicatorType: cryptography.LaodingIndicatorType) -> cryptography.MSSUIKitConfigBuilder
+  public func setLaodingIndicatorType(indicatorType: cryptography.LaodingIndicatorType) -> cryptography.MSSUIKitConfigBuilder
   public func setShowSplash(show: Swift.Bool) -> cryptography.MSSUIKitConfigBuilder
   public func setPageBackgroundResId(color: UIKit.UIColor) -> cryptography.MSSUIKitConfigBuilder
   public func setTitleTextInDashboardToolbar(text: Swift.String) -> cryptography.MSSUIKitConfigBuilder
@@ -2371,7 +2383,7 @@ public class MSSUIKitConfigBuilder {
   public func setPaymentDiscountCodeVisibility(_ type: Swift.Bool) -> cryptography.MSSUIKitConfigBuilder
   public func setUserCanLogoutFromSdk(_ type: Swift.Bool) -> cryptography.MSSUIKitConfigBuilder
   public func setDefaultPhoneNumber(_ phoneNumber: Swift.String) -> cryptography.MSSUIKitConfigBuilder
-  public func setDefaultNationalCode(_ code: Swift.String) -> cryptography.MSSUIKitConfigBuilder
+  public func setDefaultNationalCode(_ nationalNumber: Swift.String) -> cryptography.MSSUIKitConfigBuilder
   public func setPopUpTitleTextColorResId(color: UIKit.UIColor) -> cryptography.MSSUIKitConfigBuilder
   public func setPopUpTitleTextViewFont(font: UIKit.UIFont) -> cryptography.MSSUIKitConfigBuilder
   public func setPopUpDisplayMessageTextColorResId(color: UIKit.UIColor) -> cryptography.MSSUIKitConfigBuilder
@@ -2819,6 +2831,14 @@ public protocol FrameCollectorDelegate : AnyObject {
   }
   public func add(frame: cryptography.Frame)
   @objc deinit
+}
+public struct IssueCertResultModel {
+  public var transactionId: Swift.String?
+  public var status: Swift.Bool
+  public var step: cryptography.IssueCertStepResultModel
+  public var date: Foundation.Date
+  public var errorMessage: Swift.String?
+  public init(transactionId: Swift.String?, status: Swift.Bool, step: cryptography.IssueCertStepResultModel, date: Foundation.Date, errorMessage: Swift.String? = nil)
 }
 public enum DHParam {
   case rfc3526Group5
@@ -5330,6 +5350,9 @@ extension cryptography.BlockMode : Swift.RawRepresentable {}
 extension cryptography.CryptoSwiftCTR : cryptography.CryptoSwiftBlockMode {}
 extension cryptography.CryptoSwiftCTR.Error : Swift.Equatable {}
 extension cryptography.CryptoSwiftCTR.Error : Swift.Hashable {}
+extension cryptography.IssueCertStepResultModel : Swift.Equatable {}
+extension cryptography.IssueCertStepResultModel : Swift.Hashable {}
+extension cryptography.IssueCertStepResultModel : Swift.RawRepresentable {}
 extension cryptography.FoundationTransportError : Swift.Equatable {}
 extension cryptography.FoundationTransportError : Swift.Hashable {}
 extension cryptography.CryptoSwiftPKCS5.CryptoSwiftPBKDF1.Error : Swift.Equatable {}

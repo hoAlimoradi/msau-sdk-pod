@@ -85,13 +85,8 @@ public enum ServerEvent {
 public protocol Server {
   func start(address: Swift.String, port: Swift.UInt16) -> (any Swift.Error)?
 }
-@_hasMissingDesignatedInitializers public class Log {
-  public static func print(_ items: Swift.String..., filename: Swift.String = #file, function: Swift.String = #function, line: Swift.Int = #line, separator: Swift.String = " ", terminator: Swift.String = "\n")
-  public static func print(_ items: Any..., separator: Swift.String = " ", terminator: Swift.String = "\n")
-  @objc deinit
-}
 public protocol MsauIssueCertResultProtocol {
-  func observerIssueCertResult(input: Swift.String, completion: @escaping (cryptography.IssueCertResult) -> Swift.Void)
+  func observerIssueCertResult(issueCertResult: cryptography.IssueCertResultModel)
 }
 public enum HTTPUpgradeError : Swift.Error {
   case notAnUpgrade(Swift.Int, [Swift.String : Swift.String])
@@ -138,6 +133,8 @@ extension Foundation.URL {
   public func initializeCrashReporter()
   public func initializeNetworkLoggerViewController()
   public func initialize(window: UIKit.UIWindow, config: cryptography.MSSUIKitConfig, retryCount: Swift.Int = 3, completion: @escaping (Swift.Result<cryptography.InitializeStatusResult, any Swift.Error>) -> Swift.Void)
+  public func setDefaultNationalCode(_ nationalNumber: Swift.String)
+  public func setDefaultPhoneNumber(_ phoneNumber: Swift.String)
   public func setPaymentUrlSchema(url: Foundation.URL?)
   public func setSocketMessage(content: Swift.String)
   public func showMSAUUI(host: UIKit.UIViewController) throws
@@ -421,7 +418,10 @@ public struct MSSUIKitConfig {
   public var msauIssueCertResultProtocol: (any cryptography.MsauIssueCertResultProtocol)?
   public var msauSocketMessageProtocol: (any cryptography.MsauSocketMessageProtocol)?
   public var showSplash: Swift.Bool
-  public var indicatorType: cryptography.LaodingIndicatorType
+  public var customIndicatorType: cryptography.CustomHSALoadingIndicatorType {
+    mutating get
+    set
+  }
   public var sdkIsMainApplication: Swift.Bool
   public var selectedLanguage: cryptography.MsauLanguagesEnum
   public func returnKernel(_ named: Swift.String) -> Swift.String?
@@ -439,11 +439,18 @@ final internal class CryptoSwiftBlockEncryptor : cryptography.CryptoSwiftCryptor
   @objc @usableFromInline
   deinit
 }
-extension UIKit.UIFont {
-  public static let loadAllFonts: ()
-}
-extension UIKit.UIFont {
-  public static func registerCustomFontsIfNeeded()
+public enum IssueCertStepResultModel : Swift.String {
+  case payment
+  case initial
+  case keyGenerated
+  case csrSigned
+  case certCreated
+  case certImported
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
 }
 public protocol _UInt8TypeCryptoSwift {
 }
@@ -551,12 +558,6 @@ extension cryptography.CryptoSwiftPKCS5 {
   public static func getKey(_ keyTag: Swift.String) throws -> Foundation.Data
   public static func delKey(_ keyTag: Swift.String) throws
   @objc deinit
-}
-extension Swift.String {
-  public func isValidIranianNationallCode() -> Swift.Bool
-  public var replacedArabicDigitsWithEnglish: Swift.String {
-    get
-  }
 }
 extension Swift.Collection where Self.Element == Swift.UInt8, Self.Index == Swift.Int {
   @inlinable internal func toUInt32Array() -> Swift.Array<Swift.UInt32> {
@@ -856,11 +857,6 @@ public class CryptoSwiftBlockDecryptor : cryptography.CryptoSwiftCryptor, crypto
   public func seek(to position: Swift.Int) throws
   @objc deinit
 }
-extension Foundation.FileManager {
-  public static var documentsDirectoryURL: Foundation.URL {
-    get
-  }
-}
 public class WSEngine : cryptography.Engine, cryptography.TransportEventClient, cryptography.FramerEventClient, cryptography.FrameCollectorDelegate, cryptography.HTTPHandlerDelegate {
   public var respondToPingWithPong: Swift.Bool
   public init(transport: any cryptography.Transport, certPinner: (any cryptography.CertificatePinning)? = nil, headerValidator: any cryptography.HeaderValidator = FoundationSecurity(), httpHandler: any cryptography.HTTPHandler = FoundationHTTPHandler(), framer: any cryptography.Framer = WSFramer(), compressionHandler: (any cryptography.CompressionHandler)? = nil)
@@ -946,90 +942,6 @@ extension cryptography.PKCS7 {
     }
   }
   public func receipt() -> cryptography.PKCS7.ReceiptInfo?
-}
-public enum LaodingIndicatorType : Swift.CaseIterable {
-  case blank
-  case ballPulse
-  case ballGridPulse
-  case ballClipRotate
-  case squareSpin
-  case ballClipRotatePulse
-  case ballClipRotateMultiple
-  case ballPulseRise
-  case ballRotate
-  case cubeTransition
-  case ballZigZag
-  case ballZigZagDeflect
-  case ballTrianglePath
-  case ballScale
-  case lineScale
-  case lineScaleParty
-  case ballScaleMultiple
-  case ballPulseSync
-  case ballBeat
-  case ballDoubleBounce
-  case lineScalePulseOut
-  case lineScalePulseOutRapid
-  case ballScaleRipple
-  case ballScaleRippleMultiple
-  case ballSpinFadeLoader
-  case lineSpinFadeLoader
-  case triangleSkewSpin
-  case pacman
-  case ballGridBeat
-  case semiCircleSpin
-  case ballRotateChase
-  case orbit
-  case audioEqualizer
-  case circleStrokeSpin
-  public static func == (a: cryptography.LaodingIndicatorType, b: cryptography.LaodingIndicatorType) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public typealias AllCases = [cryptography.LaodingIndicatorType]
-  public static var allCases: [cryptography.LaodingIndicatorType] {
-    get
-  }
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public typealias FadeInAnimation = (UIKit.UIView) -> Swift.Void
-public typealias FadeOutAnimation = (UIKit.UIView, @escaping () -> Swift.Void) -> Swift.Void
-@objc @_Concurrency.MainActor(unsafe) final public class NVActivityIndicatorView : UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_TYPE: cryptography.LaodingIndicatorType
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_COLOR: UIKit.UIColor
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_TEXT_COLOR: UIKit.UIColor
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_PADDING: CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_SIZE: CoreFoundation.CGSize
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_DISPLAY_TIME_THRESHOLD: Swift.Int
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_MINIMUM_DISPLAY_TIME: Swift.Int
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_MESSAGE: Swift.String?
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_MESSAGE_SPACING: CoreFoundation.CGFloat
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_MESSAGE_FONT: UIKit.UIFont
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_BLOCKER_BACKGROUND_COLOR: UIKit.UIColor
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_FADE_IN_ANIMATION: (_ view: UIKit.UIView) -> Swift.Void
-  @_Concurrency.MainActor(unsafe) public static var DEFAULT_FADE_OUT_ANIMATION: (_ view: UIKit.UIView, _ complete: @escaping () -> Swift.Void) -> Swift.Void
-  @_Concurrency.MainActor(unsafe) final public var type: cryptography.LaodingIndicatorType
-  @objc @IBInspectable @_Concurrency.MainActor(unsafe) final public var color: UIKit.UIColor
-  @objc @IBInspectable @_Concurrency.MainActor(unsafe) final public var padding: CoreFoundation.CGFloat
-  @available(*, deprecated)
-  @_Concurrency.MainActor(unsafe) final public var animating: Swift.Bool {
-    get
-  }
-  @_Concurrency.MainActor(unsafe) final public var isAnimating: Swift.Bool {
-    get
-  }
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
-  @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, type: cryptography.LaodingIndicatorType? = nil, color: UIKit.UIColor? = nil, padding: CoreFoundation.CGFloat? = nil)
-  @_Concurrency.MainActor(unsafe) @objc override final public var intrinsicContentSize: CoreFoundation.CGSize {
-    @objc get
-  }
-  @_Concurrency.MainActor(unsafe) @objc override final public var bounds: CoreFoundation.CGRect {
-    @objc get
-    @objc set
-  }
-  @_Concurrency.MainActor(unsafe) final public func startAnimating()
-  @_Concurrency.MainActor(unsafe) final public func stopAnimating()
-  @objc deinit
 }
 extension cryptography.CryptoSwiftAES : cryptography.CryptoSwiftCryptors {
   @inlinable final public func makeEncryptor() throws -> any cryptography.CryptoSwiftCryptor & cryptography.CryptoSwiftUpdatable {
@@ -1704,54 +1616,6 @@ public class StringHTTPHandler : cryptography.HTTPHandler {
 }
 public enum CryptoSwiftPKCS7 {
 }
-public let notificationPrinterLogAdded: Swift.String
-public enum LogType {
-  case success
-  case error
-  case warning
-  case information
-  case alert
-  case plain
-  case splash
-  case onboarding
-  case home
-  case certDetails
-  case certList
-  case changePassword
-  case dashboard
-  case deleteKey
-  case RaPayment
-  case RaAddUserInformation
-  case RaEkyc
-  case RaSelectIssueTypeOption
-  case RaSteps
-  case RaResultSuccess
-  case lockView
-  case login
-  case keyGenerate
-  case sign
-  case signUrlPdf
-  case profile
-  case registerByMobile
-  case registerBySignedMsisdn
-  case setting
-  case transactionHistory
-  case transactionHistoryDetails
-  case viewPdfFileInsertSignature
-  case confirmSign
-  case msau
-  case cryptoLib
-  case restfulAPI
-  case websocket
-  case database
-  case userDefualt
-  case keyChain
-  public static func == (a: cryptography.LogType, b: cryptography.LogType) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
 @_hasMissingDesignatedInitializers final public class TraceInfo {
   final public var fileName: Swift.String {
     get
@@ -1761,108 +1625,6 @@ public enum LogType {
   }
   final public var lineNumber: Swift.Int {
     get
-  }
-  @objc deinit
-}
-@_hasMissingDesignatedInitializers final public class PLog {
-  final public var id: Swift.String
-  final public var details: Swift.String
-  final public var logType: cryptography.LogType
-  final public var time: Swift.String
-  final public var traceInfo: cryptography.TraceInfo
-  final public var printableLog: Swift.String {
-    get
-  }
-  final public var printableTrace: Swift.String {
-    get
-  }
-  @objc deinit
-}
-@_hasMissingDesignatedInitializers final public class Printer {
-  public static let log: cryptography.Printer
-  final public var plainLog: Swift.Bool
-  final public var addLineAfterEachPrint: Swift.Bool
-  final public var capitalizeTitles: Swift.Bool
-  final public var capitalizeDetails: Swift.Bool
-  final public var printOnlyIfDebugMode: Swift.Bool
-  final public var hideLogsTime: Swift.Bool
-  final public var disable: Swift.Bool
-  final public var keepTracking: Swift.Bool
-  final public var keepAutoTracing: Swift.Bool
-  final public var onLogCompletion: ((_ printLog: Swift.String, _ fileName: Swift.String, _ functionName: Swift.String, _ lineNumber: Swift.Int) -> ())?
-  final public var logDateFormat: Swift.String {
-    get
-    set(newValue)
-  }
-  final public func skipFile(filename: Swift.String = #file)
-  final public func addFile(filename: Swift.String = #file)
-  final public var filterLogs: Swift.Array<cryptography.LogType> {
-    get
-    set(newArray)
-  }
-  final public func saveLogsToFile(logs arrayLog: Swift.Array<cryptography.PLog>)
-  final public func deleteLogFiles()
-  final public func flush()
-  final public func addAppEventsHandler()
-  final public func removeAppEventsHandler()
-  final public func getAllLogs() -> Swift.Array<cryptography.PLog>
-  final public func getAllLogs(filterLogTypes: Swift.Array<cryptography.LogType>) -> Swift.Array<cryptography.PLog>
-  final public func all(showTrace: Swift.Bool)
-  final public func all(filterLogTypes: Swift.Array<cryptography.LogType>, showTrace: Swift.Bool)
-  final public func show(id: Swift.String, details: Swift.String, logType lType: cryptography.LogType, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func trace(fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func showInFuture(id: Swift.String, details: Swift.String, logType lType: cryptography.LogType, afterSeconds seconds: Swift.Double, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func show(details: Swift.String, logType lType: cryptography.LogType, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func success(details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func error(details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func warning(details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func information(details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func alert(details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func success(id: Swift.String, details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func error(id: Swift.String, details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func information(id: Swift.String, details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func warning(id: Swift.String, details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func alert(id: Swift.String, details: Swift.String, fileName: Swift.String = #file, lineNumber: Swift.Int = #line, functionName: Swift.String = #function)
-  final public func hideEmojis()
-  final public var arrowSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var starSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var successEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var errorEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var warningEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var infoEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var alertEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var watchEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var idEmojiSymbol: Swift.String {
-    get
-    set(newValue)
-  }
-  final public var encryptionEmojiSymbol: Swift.String {
-    get
-    set(newValue)
   }
   @objc deinit
 }
@@ -1978,9 +1740,6 @@ public struct CryptoSwiftECB : cryptography.CryptoSwiftBlockMode {
   public let customBlockSize: Swift.Int?
   public init()
   public func worker(blockSize: Swift.Int, cipherOperation: @escaping cryptography.CipherOperationOnBlock, encryptionOperation: @escaping cryptography.CipherOperationOnBlock) throws -> any cryptography.CryptoSwiftCipherModeWorker
-}
-public struct IssueCertResult {
-  public init(error: Swift.String?, trackingCode: Swift.String?)
 }
 public struct EkycResult {
   public init(error: Swift.String?, trackingCode: Swift.String?)
@@ -2149,38 +1908,6 @@ extension UIKit.UIViewController {
   @_Concurrency.MainActor(unsafe) public func hideKeyboardWhenTappedAround()
   @objc @_Concurrency.MainActor(unsafe) dynamic public func dismissKeyboard()
 }
-extension UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public func makeCircular()
-}
-extension UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public func clearConstraints()
-}
-extension UIKit.UIViewController {
-  @_Concurrency.MainActor(unsafe) public func setStatusBar(color: UIKit.UIColor)
-}
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClickListener : UIKit.UITapGestureRecognizer {
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(target: Any?, action: ObjectiveC.Selector?)
-  @objc deinit
-}
-extension UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public func setShadow()
-  @_Concurrency.MainActor(unsafe) public func setShadow(opacity: Swift.Float = 1, radius: CoreFoundation.CGFloat, shadowColor: CoreGraphics.CGColor, shadowOffset: CoreFoundation.CGSize)
-  @_Concurrency.MainActor(unsafe) public func roundCorners(corners: UIKit.UIRectCorner, radius: CoreFoundation.CGSize, roundedRect: CoreFoundation.CGRect)
-  @available(iOS 13.0, *)
-  @_Concurrency.MainActor(unsafe) public func roundCorners(corners: UIKit.UIRectCorner, radius: CoreFoundation.CGFloat, bgColor: UIKit.UIColor = .white, cornerCurve: QuartzCore.CALayerCornerCurve = .continuous, shadowColor: UIKit.UIColor = .clear, shadowOffset: CoreFoundation.CGSize = CGSize.zero, shadowOpacity: Swift.Float = 0, shadowRadius: CoreFoundation.CGFloat = 0, boundsInset: UIKit.UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-  @_Concurrency.MainActor(unsafe) public func roundCornersInOld(corners: UIKit.UIRectCorner, radius: CoreFoundation.CGFloat, bgColor: UIKit.UIColor = .white, shadowColor: UIKit.UIColor = .clear, shadowOffset: CoreFoundation.CGSize = CGSize.zero, shadowOpacity: Swift.Float = 0, shadowRadius: CoreFoundation.CGFloat = 0, boundsInset: UIKit.UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-  @_Concurrency.MainActor(unsafe) public func addSwipeGestureAllDirection(action: ObjectiveC.Selector)
-  @_Concurrency.MainActor(unsafe) public func showWithAnimation(duration: Foundation.TimeInterval = 0.3, options: UIKit.UIView.AnimationOptions = [.curveEaseIn])
-  @_Concurrency.MainActor(unsafe) public func hideWithAnimation(duration: Foundation.TimeInterval = 0.3, options: UIKit.UIView.AnimationOptions = [.curveEaseOut])
-  @_Concurrency.MainActor(unsafe) public func setOnClickListener(action: @escaping () -> Swift.Void)
-  @objc @_Concurrency.MainActor(unsafe) dynamic public func onViewClicked(sender: cryptography.ClickListener)
-}
-extension UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public func isSmallPhone(completion: @escaping (Swift.Bool) -> Swift.Void)
-  @_Concurrency.MainActor(unsafe) public func anchor(top: UIKit.NSLayoutYAxisAnchor?, left: UIKit.NSLayoutXAxisAnchor?, bottom: UIKit.NSLayoutYAxisAnchor?, right: UIKit.NSLayoutXAxisAnchor?, paddingTop: CoreFoundation.CGFloat, paddingLeft: CoreFoundation.CGFloat, paddingBottom: CoreFoundation.CGFloat, paddingRight: CoreFoundation.CGFloat, width: CoreFoundation.CGFloat, height: CoreFoundation.CGFloat, enableInsets: Swift.Bool)
-  @_Concurrency.MainActor(unsafe) public func fadeIn(duration: Foundation.TimeInterval = 1.0)
-  @_Concurrency.MainActor(unsafe) public func fadeOut(duration: Foundation.TimeInterval = 1.0)
-}
 @inlinable internal func rotateLeft(_ value: Swift.UInt8, by: Swift.UInt8) -> Swift.UInt8 {
   ((value << by) & 0xff) | (value >> (8 - by))
 }
@@ -2328,7 +2055,7 @@ extension cryptography.X509Certificate {
 public class MSSUIKitConfigBuilder {
   public init()
   public var pageBackgroundResId: UIKit.UIColor
-  public func setShowSplash(indicatorType: cryptography.LaodingIndicatorType) -> cryptography.MSSUIKitConfigBuilder
+  public func setLaodingIndicatorType(indicatorType: cryptography.CustomHSALoadingIndicatorType) -> cryptography.MSSUIKitConfigBuilder
   public func setShowSplash(show: Swift.Bool) -> cryptography.MSSUIKitConfigBuilder
   public func setPageBackgroundResId(color: UIKit.UIColor) -> cryptography.MSSUIKitConfigBuilder
   public func setTitleTextInDashboardToolbar(text: Swift.String) -> cryptography.MSSUIKitConfigBuilder
@@ -2371,7 +2098,7 @@ public class MSSUIKitConfigBuilder {
   public func setPaymentDiscountCodeVisibility(_ type: Swift.Bool) -> cryptography.MSSUIKitConfigBuilder
   public func setUserCanLogoutFromSdk(_ type: Swift.Bool) -> cryptography.MSSUIKitConfigBuilder
   public func setDefaultPhoneNumber(_ phoneNumber: Swift.String) -> cryptography.MSSUIKitConfigBuilder
-  public func setDefaultNationalCode(_ code: Swift.String) -> cryptography.MSSUIKitConfigBuilder
+  public func setDefaultNationalCode(_ nationalNumber: Swift.String) -> cryptography.MSSUIKitConfigBuilder
   public func setPopUpTitleTextColorResId(color: UIKit.UIColor) -> cryptography.MSSUIKitConfigBuilder
   public func setPopUpTitleTextViewFont(font: UIKit.UIFont) -> cryptography.MSSUIKitConfigBuilder
   public func setPopUpDisplayMessageTextColorResId(color: UIKit.UIColor) -> cryptography.MSSUIKitConfigBuilder
@@ -2819,6 +2546,14 @@ public protocol FrameCollectorDelegate : AnyObject {
   }
   public func add(frame: cryptography.Frame)
   @objc deinit
+}
+public struct IssueCertResultModel {
+  public var transactionId: Swift.String?
+  public var status: Swift.Bool
+  public var step: cryptography.IssueCertStepResultModel
+  public var date: Foundation.Date
+  public var errorMessage: Swift.String?
+  public init(transactionId: Swift.String?, status: Swift.Bool, step: cryptography.IssueCertStepResultModel, date: Foundation.Date, errorMessage: Swift.String? = nil)
 }
 public enum DHParam {
   case rfc3526Group5
@@ -3345,37 +3080,10 @@ public enum HMACAlg : cryptography.CC.CCHmacAlgorithm {
     get
   }
 }
-@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class DashedView : UIKit.UIView {
-  public struct Configuration {
-    public var color: UIKit.UIColor
-    public var dashLength: CoreFoundation.CGFloat
-    public var dashGap: CoreFoundation.CGFloat
-    public init(color: UIKit.UIColor, dashLength: CoreFoundation.CGFloat, dashGap: CoreFoundation.CGFloat)
-  }
-  @_Concurrency.MainActor(unsafe) public class var lineHeight: CoreFoundation.CGFloat {
-    get
-  }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public var intrinsicContentSize: CoreFoundation.CGSize {
-    @objc get
-  }
-  @_Concurrency.MainActor(unsafe) final public var config: cryptography.DashedView.Configuration {
-    get
-    set
-  }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
-  @objc deinit
-}
 public struct InitializeStatus {
   public var isAvailable: Swift.Bool
   public var error: cryptography.MSAU.CustomError?
   public init(isAvailable: Swift.Bool, error: cryptography.MSAU.CustomError?)
-}
-public struct PersianDatePickerPresenter {
-  public init()
-  public func show(view: UIKit.UIView, callBack: @escaping (_ persianDate: Swift.String) -> ())
-  public func show1(in viewController: UIKit.UIViewController, callBack: @escaping (_ persianDate: Swift.String) -> ())
 }
 public enum PopUpTypeView {
   case bottomSheet
@@ -3393,19 +3101,6 @@ public enum OpMode : cryptography.CC.CCOperation {
   public var rawValue: cryptography.CC.CCOperation {
     get
   }
-}
-public enum MultiPartResult<Value, ResponseError> where ResponseError : cryptography.GeneralResponseModel {
-  case success(Value)
-  case failure(ResponseError)
-  case error((any Swift.Error)?)
-}
-@objc @_inheritsConvenienceInitializers public class MultiPart : ObjectiveC.NSObject {
-  public static let fieldName: Swift.String
-  public static let pathURLs: Swift.String
-  public func callPostWebService(_ url_String: Swift.String, parameetrs: [Swift.String : Any]?, filePathArr arrFilePath: [[Swift.String : Any]]?, completion: @escaping ([Swift.String : Any]?, (any Swift.Error)?) -> ())
-  public func callPostWSWithModel<T>(_ url_String: Swift.String, parameters: [Swift.String : Any]?, filePathArr arrFilePath: [[Swift.String : Any]]?, model: T.Type, completion: @escaping (cryptography.MultiPartResult<T, cryptography.GeneralResponseModel>) -> ()) where T : Swift.Decodable
-  @objc override dynamic public init()
-  @objc deinit
 }
 @_hasMissingDesignatedInitializers public class GeneralResponseModel : Swift.Decodable {
   @objc deinit
@@ -3645,18 +3340,11 @@ public struct DeleteKeyResponse : Swift.Codable {
   public static func stripHeader(_ pemKey: Swift.String) -> Swift.String?
   @objc deinit
 }
-final public class ActivityData {
-  public init(size: CoreFoundation.CGSize? = nil, message: Swift.String? = nil, messageFont: UIKit.UIFont? = nil, messageSpacing: CoreFoundation.CGFloat? = nil, type: cryptography.LaodingIndicatorType? = nil, color: UIKit.UIColor? = nil, padding: CoreFoundation.CGFloat? = nil, displayTimeThreshold: Swift.Int? = nil, minimumDisplayTime: Swift.Int? = nil, backgroundColor: UIKit.UIColor? = nil, textColor: UIKit.UIColor? = nil)
-  @objc deinit
-}
 @_hasMissingDesignatedInitializers final public class NVActivityIndicatorPresenter {
   public static let sharedInstance: cryptography.NVActivityIndicatorPresenter
   final public var isAnimating: Swift.Bool {
     get
   }
-  final public func startAnimating(_ data: cryptography.ActivityData, _ fadeInAnimation: cryptography.FadeInAnimation? = nil)
-  final public func stopAnimating(_ fadeOutAnimation: cryptography.FadeOutAnimation? = nil)
-  final public func setMessage(_ message: Swift.String?)
   @objc deinit
 }
 public enum IssueCertParentType {
@@ -3868,15 +3556,6 @@ public enum IssueCertTransactionStatus : Swift.String, Swift.Codable {
 extension cryptography.NFX : UIKit.UIAdaptivePresentationControllerDelegate {
   @_Concurrency.MainActor(unsafe) @objc dynamic public func presentationControllerDidDismiss(_ presentationController: UIKit.UIPresentationController)
 }
-public protocol LoadingIndicatorViewable {
-}
-extension cryptography.LoadingIndicatorViewable where Self : UIKit.UIViewController {
-  public var isAnimating: Swift.Bool {
-    get
-  }
-  public func startAnimating(_ size: CoreFoundation.CGSize? = nil, message: Swift.String? = nil, messageFont: UIKit.UIFont? = nil, type: cryptography.LaodingIndicatorType? = nil, color: UIKit.UIColor? = nil, padding: CoreFoundation.CGFloat? = nil, displayTimeThreshold: Swift.Int? = nil, minimumDisplayTime: Swift.Int? = nil, backgroundColor: UIKit.UIColor? = nil, textColor: UIKit.UIColor? = nil, fadeInAnimation: cryptography.FadeInAnimation? = NVActivityIndicatorView.DEFAULT_FADE_IN_ANIMATION)
-  public func stopAnimating(_ fadeOutAnimation: cryptography.FadeOutAnimation? = NVActivityIndicatorView.DEFAULT_FADE_OUT_ANIMATION)
-}
 public enum AuthBlockMode : cryptography.CC.CCMode {
   case gcm, ccm
   public init?(rawValue: cryptography.CC.CCMode)
@@ -3902,41 +3581,6 @@ public struct CryptoSwiftCCM {
   public init(iv: Swift.Array<Swift.UInt8>, tagLength: Swift.Int, messageLength: Swift.Int, additionalAuthenticatedData: Swift.Array<Swift.UInt8>? = nil)
   public init(iv: Swift.Array<Swift.UInt8>, tagLength: Swift.Int, messageLength: Swift.Int, authenticationTag: Swift.Array<Swift.UInt8>, additionalAuthenticatedData: Swift.Array<Swift.UInt8>? = nil)
   public func worker(blockSize: Swift.Int, cipherOperation: @escaping cryptography.CipherOperationOnBlock, encryptionOperation: @escaping cryptography.CipherOperationOnBlock) throws -> any cryptography.CryptoSwiftCipherModeWorker
-}
-@objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) public class PersianDatePickerView : UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public var year: Swift.Int
-  @_Concurrency.MainActor(unsafe) public var month: Swift.Int
-  @_Concurrency.MainActor(unsafe) public var day: Swift.Int
-  @_Concurrency.MainActor(unsafe) public var onChange: (cryptography.Listener)?
-  @_Concurrency.MainActor(unsafe) public var font: UIKit.UIFont?
-  @_Concurrency.MainActor(unsafe) public var style: cryptography.PersianDatePickerStyle {
-    get
-    set
-  }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
-  @_Concurrency.MainActor(unsafe) convenience public init(date: Foundation.Date, timeZone: Foundation.TimeZone? = nil)
-  @_Concurrency.MainActor(unsafe) public func setYearsRange(fromYear: Swift.Int, toYear: Swift.Int)
-  @_Concurrency.MainActor(unsafe) public func setMaxYear(toYear: Swift.Int)
-  @_Concurrency.MainActor(unsafe) public func setMinYear(fromYear: Swift.Int)
-  @_Concurrency.MainActor(unsafe) public func gotoDefualtDate()
-  @_Concurrency.MainActor(unsafe) public func gotoCurrentDate()
-  @_Concurrency.MainActor(unsafe) public func gotoDate(date: Foundation.Date)
-  @_Concurrency.MainActor(unsafe) public func setPersianDate(year: Swift.Int, month: Swift.Int, day: Swift.Int)
-  @_Concurrency.MainActor(unsafe) public func getGregorianDate() -> Foundation.Date?
-  @_Concurrency.MainActor(unsafe) public func getPersianDate() -> Swift.String?
-  @_Concurrency.MainActor(unsafe) public func nextDay(by date: Swift.String)
-  @_Concurrency.MainActor(unsafe) public func backDay(by date: Swift.String)
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
-  @objc deinit
-}
-extension cryptography.PersianDatePickerView : UIKit.UIPickerViewDataSource {
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func numberOfComponents(in pickerView: UIKit.UIPickerView) -> Swift.Int
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func pickerView(_ pickerView: UIKit.UIPickerView, numberOfRowsInComponent component: Swift.Int) -> Swift.Int
-}
-extension cryptography.PersianDatePickerView : UIKit.UIPickerViewDelegate {
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func pickerView(_ pickerView: UIKit.UIPickerView, viewForRow row: Swift.Int, forComponent component: Swift.Int, reusing view: UIKit.UIView?) -> UIKit.UIView
-  @_Concurrency.MainActor(unsafe) @objc dynamic public func pickerView(_ pickerView: UIKit.UIPickerView, didSelectRow row: Swift.Int, inComponent component: Swift.Int)
 }
 public typealias Listener = (_ year: Swift.Int, _ month: Swift.Int, _ day: Swift.Int) -> Swift.Void
 public enum PersianDatePickerStyle {
@@ -4251,32 +3895,6 @@ public enum DigestAlgorithm : cryptography.CC.CCDigestAlgorithm {
   public var rawValue: cryptography.CC.CCDigestAlgorithm {
     get
   }
-}
-extension Foundation.URLRequest {
-  public enum HTTPMethod : Swift.String {
-    case get
-    case put
-    case post
-    case delete
-    case head
-    case options
-    case trace
-    case connect
-    public init?(rawValue: Swift.String)
-    public typealias RawValue = Swift.String
-    public var rawValue: Swift.String {
-      get
-    }
-  }
-  public var method: Foundation.URLRequest.HTTPMethod? {
-    get
-    set
-  }
-}
-extension Foundation.URLRequest {
-  public init(url: Foundation.URL, method: Foundation.URLRequest.HTTPMethod, contentType: Swift.String?)
-  public init(url: Foundation.URL, method: Foundation.URLRequest.HTTPMethod, contentType: Swift.String?, body: Foundation.Data?)
-  public init(url: Foundation.URL, method: Foundation.URLRequest.HTTPMethod, contentType: Swift.String?, cachePolicy: Foundation.URLRequest.CachePolicy, timeoutInterval: Foundation.TimeInterval)
 }
 @_hasMissingDesignatedInitializers open class CC {
   public typealias CCCryptorStatus = Swift.Int32
@@ -4692,28 +4310,6 @@ public class Compression {
 public struct CompressionError : Foundation.LocalizedError {
   public let title: Swift.String
 }
-public struct LightCompressor {
-  public struct Video {
-    public struct Configuration {
-      public let quality: cryptography.VideoQuality
-      public let isMinBitrateCheckEnabled: Swift.Bool
-      public let videoBitrateInMbps: Swift.Int?
-      public let disableAudio: Swift.Bool
-      public let keepOriginalResolution: Swift.Bool
-      public let videoSize: CoreFoundation.CGSize?
-      public init(quality: cryptography.VideoQuality = .medium, isMinBitrateCheckEnabled: Swift.Bool = true, videoBitrateInMbps: Swift.Int? = nil, disableAudio: Swift.Bool = false, keepOriginalResolution: Swift.Bool = false, videoSize: CoreFoundation.CGSize? = nil)
-    }
-    public let source: Foundation.URL
-    public let destination: Foundation.URL
-    public let configuration: cryptography.LightCompressor.Video.Configuration
-    public init(source: Foundation.URL, destination: Foundation.URL, configuration: cryptography.LightCompressor.Video.Configuration = Configuration())
-  }
-  public init()
-  public func compressVideo(videos: [cryptography.LightCompressor.Video], progressQueue: Dispatch.DispatchQueue = .main, progressHandler: ((Foundation.Progress) -> ())?, completion: @escaping (cryptography.CompressionResult) -> ()) -> cryptography.Compression
-}
-extension UIKit.UIView {
-  @_Concurrency.MainActor(unsafe) public func showAnimation(_ completionBlock: @escaping () -> Swift.Void)
-}
 public struct CertificateKeyInformation {
   public var keyId: Swift.Int
   public var certificateEncodedBase64: Swift.String?
@@ -5108,102 +4704,14 @@ public struct CryptoSwiftOFB : cryptography.CryptoSwiftBlockMode {
   @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
   @objc deinit
 }
-@objc public protocol MTSlideToOpenDelegate {
-  @objc func mtSlideToOpenDelegateDidFinish(_ sender: cryptography.SlideToOpenButton)
-}
-@objc @_inheritsConvenienceInitializers @objcMembers @_Concurrency.MainActor(unsafe) public class SlideToOpenButton : UIKit.UIView {
-  @objc @_Concurrency.MainActor(unsafe) final public let textLabel: UIKit.UILabel
-  @objc @_Concurrency.MainActor(unsafe) final public let sliderTextLabel: UIKit.UILabel
-  @objc @_Concurrency.MainActor(unsafe) final public let thumnailImageView: UIKit.UIImageView
-  @objc @_Concurrency.MainActor(unsafe) final public let sliderHolderView: UIKit.UIView
-  @objc @_Concurrency.MainActor(unsafe) final public let draggedView: UIKit.UIView
-  @objc @_Concurrency.MainActor(unsafe) final public let view: UIKit.UIView
-  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: (any cryptography.MTSlideToOpenDelegate)?
-  @objc @_Concurrency.MainActor(unsafe) public var animationVelocity: Swift.Double
-  @objc @_Concurrency.MainActor(unsafe) public var sliderViewTopDistance: CoreFoundation.CGFloat {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var thumbnailViewTopDistance: CoreFoundation.CGFloat {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var thumbnailViewStartingDistance: CoreFoundation.CGFloat {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var textLabelLeadingDistance: CoreFoundation.CGFloat {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var isEnabled: Swift.Bool {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var showSliderText: Swift.Bool {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var animationChangedEnabledBlock: ((Swift.Bool) -> Swift.Void)?
-  @objc @_Concurrency.MainActor(unsafe) public var sliderCornerRadius: CoreFoundation.CGFloat {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var sliderBackgroundColor: UIKit.UIColor {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var textColor: UIKit.UIColor {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var slidingColor: UIKit.UIColor {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var thumbnailColor: UIKit.UIColor {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var labelText: Swift.String {
-    @objc get
-    @objc set
-  }
-  @objc @_Concurrency.MainActor(unsafe) public var textFont: UIKit.UIFont {
-    @objc get
-    @objc set
-  }
-  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
-  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
-  @objc @_Concurrency.MainActor(unsafe) public func resetStateWithAnimation(_ animated: Swift.Bool)
-  @objc deinit
-}
 @_hasMissingDesignatedInitializers open class PEM {
   public static func stripHeaderFooter(_ data: Swift.String, header: Swift.String, footer: Swift.String) -> Swift.String?
   public static func base64Decode(_ base64Data: Swift.String) -> Foundation.Data?
   public static func base64Encode(_ key: Foundation.Data) -> Swift.String
   @objc deinit
 }
-public enum Model : Swift.String {
-  case simulator, iPod1, iPod2, iPod3, iPod4, iPod5, iPod6, iPod7, iPad2, iPad3, iPad4, iPadAir, iPadAir2, iPadAir3, iPadAir4, iPad5, iPad6, iPad7, iPad8, iPad9, iPadMini, iPadMini2, iPadMini3, iPadMini4, iPadMini5, iPadMini6, iPadPro9_7, iPadPro10_5, iPadPro11, iPadPro2_11, iPadPro3_11, iPadPro12_9, iPadPro2_12_9, iPadPro3_12_9, iPadPro4_12_9, iPadPro5_12_9, iPhone4, iPhone4S, iPhone5, iPhone5S, iPhone5C, iPhone6, iPhone6Plus, iPhone6S, iPhone6SPlus, iPhoneSE, iPhone7, iPhone7Plus, iPhone8, iPhone8Plus, iPhoneX, iPhoneXS, iPhoneXSMax, iPhoneXR, iPhone11, iPhone11Pro, iPhone11ProMax, iPhoneSE2, iPhone12Mini, iPhone12, iPhone12Pro, iPhone12ProMax, iPhone13Mini, iPhone13, iPhone13Pro, iPhone13ProMax, AppleWatch1, AppleWatchS1, AppleWatchS2, AppleWatchS3, AppleWatchS4, AppleWatchS5, AppleWatchSE, AppleWatchS6, AppleWatchS7, AppleTV1, AppleTV2, AppleTV3, AppleTV4, AppleTV_4K, AppleTV2_4K, unrecognized
-  public init?(rawValue: Swift.String)
-  public typealias RawValue = Swift.String
-  public var rawValue: Swift.String {
-    get
-  }
-}
-extension UIKit.UIDevice {
-  @_Concurrency.MainActor(unsafe) public var type: cryptography.Model {
-    get
-  }
-}
 extension UIKit.UIDevice {
   @_Concurrency.MainActor(unsafe) public static var isSimulator: Swift.Bool
-}
-extension UIKit.UIDevice {
-  @_Concurrency.MainActor(unsafe) public var typeModel: cryptography.Model {
-    get
-  }
 }
 public enum SocketCertificatePinningError : Swift.Error, Swift.Equatable {
   case invalidRequest
@@ -5237,6 +4745,43 @@ public enum CryptoSwiftPadding : cryptography.CryptoSwiftPaddingProtocol {
   public var hashValue: Swift.Int {
     get
   }
+}
+public struct CustomHSALoadingIndicatorType {
+  public let rawValue: Swift.Int
+  public static let blank: cryptography.CustomHSALoadingIndicatorType
+  public static let ballPulse: cryptography.CustomHSALoadingIndicatorType
+  public static let ballGridPulse: cryptography.CustomHSALoadingIndicatorType
+  public static let ballClipRotate: cryptography.CustomHSALoadingIndicatorType
+  public static let squareSpin: cryptography.CustomHSALoadingIndicatorType
+  public static let ballClipRotatePulse: cryptography.CustomHSALoadingIndicatorType
+  public static let ballClipRotateMultiple: cryptography.CustomHSALoadingIndicatorType
+  public static let ballPulseRise: cryptography.CustomHSALoadingIndicatorType
+  public static let ballRotate: cryptography.CustomHSALoadingIndicatorType
+  public static let cubeTransition: cryptography.CustomHSALoadingIndicatorType
+  public static let ballZigZag: cryptography.CustomHSALoadingIndicatorType
+  public static let ballZigZagDeflect: cryptography.CustomHSALoadingIndicatorType
+  public static let ballTrianglePath: cryptography.CustomHSALoadingIndicatorType
+  public static let ballScale: cryptography.CustomHSALoadingIndicatorType
+  public static let lineScale: cryptography.CustomHSALoadingIndicatorType
+  public static let lineScaleParty: cryptography.CustomHSALoadingIndicatorType
+  public static let ballScaleMultiple: cryptography.CustomHSALoadingIndicatorType
+  public static let ballPulseSync: cryptography.CustomHSALoadingIndicatorType
+  public static let ballBeat: cryptography.CustomHSALoadingIndicatorType
+  public static let ballDoubleBounce: cryptography.CustomHSALoadingIndicatorType
+  public static let lineScalePulseOut: cryptography.CustomHSALoadingIndicatorType
+  public static let lineScalePulseOutRapid: cryptography.CustomHSALoadingIndicatorType
+  public static let ballScaleRipple: cryptography.CustomHSALoadingIndicatorType
+  public static let ballScaleRippleMultiple: cryptography.CustomHSALoadingIndicatorType
+  public static let ballSpinFadeLoader: cryptography.CustomHSALoadingIndicatorType
+  public static let lineSpinFadeLoader: cryptography.CustomHSALoadingIndicatorType
+  public static let triangleSkewSpin: cryptography.CustomHSALoadingIndicatorType
+  public static let pacman: cryptography.CustomHSALoadingIndicatorType
+  public static let ballGridBeat: cryptography.CustomHSALoadingIndicatorType
+  public static let semiCircleSpin: cryptography.CustomHSALoadingIndicatorType
+  public static let ballRotateChase: cryptography.CustomHSALoadingIndicatorType
+  public static let orbit: cryptography.CustomHSALoadingIndicatorType
+  public static let audioEqualizer: cryptography.CustomHSALoadingIndicatorType
+  public static let circleStrokeSpin: cryptography.CustomHSALoadingIndicatorType
 }
 extension cryptography.KeyInfomationEntity {
   @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<cryptography.KeyInfomationEntity>
@@ -5330,6 +4875,9 @@ extension cryptography.BlockMode : Swift.RawRepresentable {}
 extension cryptography.CryptoSwiftCTR : cryptography.CryptoSwiftBlockMode {}
 extension cryptography.CryptoSwiftCTR.Error : Swift.Equatable {}
 extension cryptography.CryptoSwiftCTR.Error : Swift.Hashable {}
+extension cryptography.IssueCertStepResultModel : Swift.Equatable {}
+extension cryptography.IssueCertStepResultModel : Swift.Hashable {}
+extension cryptography.IssueCertStepResultModel : Swift.RawRepresentable {}
 extension cryptography.FoundationTransportError : Swift.Equatable {}
 extension cryptography.FoundationTransportError : Swift.Hashable {}
 extension cryptography.CryptoSwiftPKCS5.CryptoSwiftPBKDF1.Error : Swift.Equatable {}
@@ -5342,8 +4890,6 @@ extension cryptography.CryptoSwiftSHA2.Variant : Swift.Sendable {}
 extension cryptography.HTTPModelShortType : Swift.Equatable {}
 extension cryptography.HTTPModelShortType : Swift.Hashable {}
 extension cryptography.HTTPModelShortType : Swift.RawRepresentable {}
-extension cryptography.LaodingIndicatorType : Swift.Equatable {}
-extension cryptography.LaodingIndicatorType : Swift.Hashable {}
 extension cryptography.PEMEncryptedPrivateKey.EncMode : Swift.Equatable {}
 extension cryptography.PEMEncryptedPrivateKey.EncMode : Swift.Hashable {}
 extension cryptography.TransactionTypeString : Swift.Equatable {}
@@ -5448,8 +4994,6 @@ extension cryptography.AppStrings.ResetPin : Swift.RawRepresentable {}
 extension cryptography.AppStrings.ErrorMessage : Swift.Equatable {}
 extension cryptography.AppStrings.ErrorMessage : Swift.Hashable {}
 extension cryptography.AppStrings.ErrorMessage : Swift.RawRepresentable {}
-extension cryptography.LogType : Swift.Equatable {}
-extension cryptography.LogType : Swift.Hashable {}
 extension cryptography.FoundationSecurityError : Swift.Equatable {}
 extension cryptography.FoundationSecurityError : Swift.Hashable {}
 extension cryptography.SecurityErrorCode : Swift.Equatable {}
@@ -5578,9 +5122,6 @@ extension cryptography.DtbsContentTypeEnum : Swift.RawRepresentable {}
 extension cryptography.DigestAlgorithm : Swift.Equatable {}
 extension cryptography.DigestAlgorithm : Swift.Hashable {}
 extension cryptography.DigestAlgorithm : Swift.RawRepresentable {}
-extension Foundation.URLRequest.HTTPMethod : Swift.Equatable {}
-extension Foundation.URLRequest.HTTPMethod : Swift.Hashable {}
-extension Foundation.URLRequest.HTTPMethod : Swift.RawRepresentable {}
 extension cryptography.ChaCha20.Error : Swift.Equatable {}
 extension cryptography.ChaCha20.Error : Swift.Hashable {}
 extension cryptography.ASN1Identifier.Class : Swift.Equatable {}
@@ -5627,9 +5168,6 @@ extension cryptography.CryptoSwiftCBC.Error : Swift.Equatable {}
 extension cryptography.CryptoSwiftCBC.Error : Swift.Hashable {}
 extension cryptography.CryptoSwiftOFB.Error : Swift.Equatable {}
 extension cryptography.CryptoSwiftOFB.Error : Swift.Hashable {}
-extension cryptography.Model : Swift.Equatable {}
-extension cryptography.Model : Swift.Hashable {}
-extension cryptography.Model : Swift.RawRepresentable {}
 extension cryptography.SocketCertificatePinningError : Swift.Hashable {}
 extension cryptography.CryptoSwiftPadding : Swift.Equatable {}
 extension cryptography.CryptoSwiftPadding : Swift.Hashable {}

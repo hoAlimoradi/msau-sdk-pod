@@ -897,13 +897,13 @@ SWIFT_CLASS("_TtC12cryptography18EkycViewController")
 
 
 
+
+
+
+
 @interface EkycViewController (SWIFT_EXTENSION(cryptography))
 - (void)returnToAddInformation;
 @end
-
-
-
-
 
 @class AVCaptureFileOutput;
 @class AVCaptureConnection;
@@ -911,6 +911,7 @@ SWIFT_CLASS("_TtC12cryptography18EkycViewController")
 @interface EkycViewController (SWIFT_EXTENSION(cryptography)) <AVCaptureFileOutputRecordingDelegate>
 - (void)captureOutput:(AVCaptureFileOutput * _Nonnull)output didFinishRecordingToOutputFileAtURL:(NSURL * _Nonnull)outputFileURL fromConnections:(NSArray<AVCaptureConnection *> * _Nonnull)connections error:(NSError * _Nullable)error;
 @end
+
 
 
 
@@ -928,7 +929,6 @@ SWIFT_CLASS("_TtC12cryptography18EkycViewController")
 - (void)appDidEnterBackgroundWithNotification:(NSNotification * _Nonnull)notification;
 - (void)appWillEnterForegroundWithNotification:(NSNotification * _Nonnull)notification;
 @end
-
 
 
 SWIFT_CLASS("_TtC12cryptography14ErrorAlertView")
@@ -985,6 +985,76 @@ SWIFT_CLASS("_TtC12cryptography19FoundationTransport")
 - (void)stream:(NSStream * _Nonnull)aStream handleEvent:(NSStreamEvent)eventCode;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+/// Activity indicator view with nice animations
+SWIFT_CLASS("_TtC12cryptography26HSANVActivityIndicatorView")
+@interface HSANVActivityIndicatorView : UIView
+@property (nonatomic, copy) IBInspectable NSString * _Nonnull typeName SWIFT_UNAVAILABLE_MSG("This property is reserved for Interface Builder. Use 'type' instead.");
+/// Color of activity indicator view.
+@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
+/// Padding of activity indicator view.
+@property (nonatomic) IBInspectable CGFloat padding;
+/// Returns an object initialized from data in a given unarchiver.
+/// self, initialized using the data in decoder.
+/// \param decoder an unarchiver object.
+///
+///
+/// returns:
+/// self, initialized using the data in decoder.
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+/// Returns the natural size for the receiving view, considering only properties of the view itself.
+/// A size indicating the natural size for the receiving view based on its intrinsic properties.
+///
+/// returns:
+/// A size indicating the natural size for the receiving view based on its intrinsic properties.
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+@property (nonatomic) CGRect bounds;
+- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
+@end
+
+
+IB_DESIGNABLE
+SWIFT_CLASS("_TtC12cryptography24HSAPersianDatePickerView")
+@interface HSAPersianDatePickerView : UIView
+@property (nonatomic, strong) IBInspectable UIColor * _Nonnull fontColor;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)layoutSubviews;
+@end
+
+@class UIPickerView;
+
+@interface HSAPersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDataSource>
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView * _Nonnull)pickerView SWIFT_WARN_UNUSED_RESULT;
+- (NSInteger)pickerView:(UIPickerView * _Nonnull)pickerView numberOfRowsInComponent:(NSInteger)component SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface HSAPersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDelegate>
+- (UIView * _Nonnull)pickerView:(UIPickerView * _Nonnull)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView * _Nullable)view SWIFT_WARN_UNUSED_RESULT;
+- (void)pickerView:(UIPickerView * _Nonnull)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component;
+@end
+
+
+SWIFT_CLASS("_TtC12cryptography20HSAPersianPickerView")
+@interface HSAPersianPickerView : UIView
+@property (nonatomic, weak) IBOutlet HSAPersianDatePickerView * _Null_unspecified pdPicker;
+@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
+@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified confirmButton;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (IBAction)didTapCancel:(id _Nonnull)sender;
+- (IBAction)didTapOk:(id _Nonnull)sender;
+@end
+
+
+SWIFT_CLASS("_TtC12cryptography13HSAShadowView")
+@interface HSAShadowView : CustomView
+@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 @end
 
 @class NSURLSession;
@@ -1189,7 +1259,7 @@ SWIFT_CLASS("_TtC12cryptography3NFX")
 - (void)stop;
 - (void)motionDetected;
 - (BOOL)isStarted SWIFT_WARN_UNUSED_RESULT;
-- (void)setCachePolicy:(enum NSURLCacheStoragePolicy)policy;
+- (void)setCachePolicy:(NSURLCacheStoragePolicy)policy;
 - (void)setGesture:(enum ENFXGesture)gesture;
 - (void)show;
 - (void)hide;
@@ -1484,33 +1554,6 @@ SWIFT_CLASS("_TtC12cryptography27NSURLSessionPinningDelegate")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-
-/// Activity indicator view with nice animations
-SWIFT_CLASS("_TtC12cryptography23NVActivityIndicatorView")
-@interface NVActivityIndicatorView : UIView
-@property (nonatomic, copy) IBInspectable NSString * _Nonnull typeName SWIFT_UNAVAILABLE_MSG("This property is reserved for Interface Builder. Use 'type' instead.");
-/// Color of activity indicator view.
-@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
-/// Padding of activity indicator view.
-@property (nonatomic) IBInspectable CGFloat padding;
-/// Returns an object initialized from data in a given unarchiver.
-/// self, initialized using the data in decoder.
-/// \param decoder an unarchiver object.
-///
-///
-/// returns:
-/// self, initialized using the data in decoder.
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-/// Returns the natural size for the receiving view, considering only properties of the view itself.
-/// A size indicating the natural size for the receiving view based on its intrinsic properties.
-///
-/// returns:
-/// A size indicating the natural size for the receiving view based on its intrinsic properties.
-@property (nonatomic, readonly) CGSize intrinsicContentSize;
-@property (nonatomic) CGRect bounds;
-- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
-@end
-
 @class NSURLSessionWebSocketTask;
 
 SWIFT_CLASS("_TtC12cryptography12NativeEngine") SWIFT_AVAILABILITY(tvos,introduced=13.0) SWIFT_AVAILABILITY(watchos,introduced=6.0) SWIFT_AVAILABILITY(ios,introduced=13.0) SWIFT_AVAILABILITY(macos,introduced=10.15)
@@ -1658,41 +1701,6 @@ SWIFT_CLASS("_TtC12cryptography21PaymentViewController")
 @end
 
 
-IB_DESIGNABLE
-SWIFT_CLASS("_TtC12cryptography21PersianDatePickerView")
-@interface PersianDatePickerView : UIView
-@property (nonatomic, strong) IBInspectable UIColor * _Nonnull fontColor;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (void)layoutSubviews;
-@end
-
-@class UIPickerView;
-
-@interface PersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDataSource>
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView * _Nonnull)pickerView SWIFT_WARN_UNUSED_RESULT;
-- (NSInteger)pickerView:(UIPickerView * _Nonnull)pickerView numberOfRowsInComponent:(NSInteger)component SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface PersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDelegate>
-- (UIView * _Nonnull)pickerView:(UIPickerView * _Nonnull)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView * _Nullable)view SWIFT_WARN_UNUSED_RESULT;
-- (void)pickerView:(UIPickerView * _Nonnull)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component;
-@end
-
-
-SWIFT_CLASS("_TtC12cryptography17PersianPickerView")
-@interface PersianPickerView : UIView
-@property (nonatomic, weak) IBOutlet PersianDatePickerView * _Null_unspecified pdPicker;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified confirmButton;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (IBAction)didTapCancel:(id _Nonnull)sender;
-- (IBAction)didTapOk:(id _Nonnull)sender;
-@end
-
-
 SWIFT_CLASS("_TtC12cryptography10PlayerView")
 @interface PlayerView : UIView
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layerClass;)
@@ -1719,11 +1727,11 @@ SWIFT_CLASS("_TtC12cryptography32PopUpBasedOnSocketViewController")
 
 
 
+
 @interface PopUpBasedOnSocketViewController (SWIFT_EXTENSION(cryptography)) <UIViewControllerTransitioningDelegate>
 - (id <UIViewControllerAnimatedTransitioning> _Nullable)animationControllerForPresentedController:(UIViewController * _Nonnull)presented presentingController:(UIViewController * _Nonnull)presenting sourceController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 - (id <UIViewControllerAnimatedTransitioning> _Nullable)animationControllerForDismissedController:(UIViewController * _Nonnull)dismissed SWIFT_WARN_UNUSED_RESULT;
 @end
-
 
 @class UICollectionView;
 @class UICollectionViewCell;
@@ -1967,14 +1975,6 @@ SWIFT_CLASS("_TtC12cryptography21SettingViewController")
 @end
 
 
-SWIFT_CLASS("_TtC12cryptography10ShadowView")
-@interface ShadowView : CustomView
-@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
 SWIFT_CLASS("_TtC12cryptography15SignContentView")
 @interface SignContentView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
@@ -2147,10 +2147,10 @@ SWIFT_CLASS("_TtC12cryptography32TransactionHistoryViewController")
 @end
 
 
-
 @interface TransactionHistoryViewController (SWIFT_EXTENSION(cryptography)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
+
 
 
 
@@ -2213,11 +2213,11 @@ SWIFT_CLASS("_TtC12cryptography35TransactionTypeFilterViewController")
 @end
 
 
-
 @interface UITextField (SWIFT_EXTENSION(cryptography))
 @property (nonatomic) IBInspectable BOOL doneAccessory;
 - (void)doneButtonAction;
 @end
+
 
 
 
@@ -2245,12 +2245,12 @@ SWIFT_CLASS("_TtC12cryptography35TransactionTypeFilterViewController")
 
 
 @interface UIViewController (SWIFT_EXTENSION(cryptography))
-- (void)close;
+- (void)dismissKeyboard;
 @end
 
 
 @interface UIViewController (SWIFT_EXTENSION(cryptography))
-- (void)dismissKeyboard;
+- (void)close;
 @end
 
 
@@ -3194,13 +3194,13 @@ SWIFT_CLASS("_TtC12cryptography18EkycViewController")
 
 
 
+
+
+
+
 @interface EkycViewController (SWIFT_EXTENSION(cryptography))
 - (void)returnToAddInformation;
 @end
-
-
-
-
 
 @class AVCaptureFileOutput;
 @class AVCaptureConnection;
@@ -3208,6 +3208,7 @@ SWIFT_CLASS("_TtC12cryptography18EkycViewController")
 @interface EkycViewController (SWIFT_EXTENSION(cryptography)) <AVCaptureFileOutputRecordingDelegate>
 - (void)captureOutput:(AVCaptureFileOutput * _Nonnull)output didFinishRecordingToOutputFileAtURL:(NSURL * _Nonnull)outputFileURL fromConnections:(NSArray<AVCaptureConnection *> * _Nonnull)connections error:(NSError * _Nullable)error;
 @end
+
 
 
 
@@ -3225,7 +3226,6 @@ SWIFT_CLASS("_TtC12cryptography18EkycViewController")
 - (void)appDidEnterBackgroundWithNotification:(NSNotification * _Nonnull)notification;
 - (void)appWillEnterForegroundWithNotification:(NSNotification * _Nonnull)notification;
 @end
-
 
 
 SWIFT_CLASS("_TtC12cryptography14ErrorAlertView")
@@ -3282,6 +3282,76 @@ SWIFT_CLASS("_TtC12cryptography19FoundationTransport")
 - (void)stream:(NSStream * _Nonnull)aStream handleEvent:(NSStreamEvent)eventCode;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+/// Activity indicator view with nice animations
+SWIFT_CLASS("_TtC12cryptography26HSANVActivityIndicatorView")
+@interface HSANVActivityIndicatorView : UIView
+@property (nonatomic, copy) IBInspectable NSString * _Nonnull typeName SWIFT_UNAVAILABLE_MSG("This property is reserved for Interface Builder. Use 'type' instead.");
+/// Color of activity indicator view.
+@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
+/// Padding of activity indicator view.
+@property (nonatomic) IBInspectable CGFloat padding;
+/// Returns an object initialized from data in a given unarchiver.
+/// self, initialized using the data in decoder.
+/// \param decoder an unarchiver object.
+///
+///
+/// returns:
+/// self, initialized using the data in decoder.
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+/// Returns the natural size for the receiving view, considering only properties of the view itself.
+/// A size indicating the natural size for the receiving view based on its intrinsic properties.
+///
+/// returns:
+/// A size indicating the natural size for the receiving view based on its intrinsic properties.
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+@property (nonatomic) CGRect bounds;
+- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
+@end
+
+
+IB_DESIGNABLE
+SWIFT_CLASS("_TtC12cryptography24HSAPersianDatePickerView")
+@interface HSAPersianDatePickerView : UIView
+@property (nonatomic, strong) IBInspectable UIColor * _Nonnull fontColor;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)layoutSubviews;
+@end
+
+@class UIPickerView;
+
+@interface HSAPersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDataSource>
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView * _Nonnull)pickerView SWIFT_WARN_UNUSED_RESULT;
+- (NSInteger)pickerView:(UIPickerView * _Nonnull)pickerView numberOfRowsInComponent:(NSInteger)component SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface HSAPersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDelegate>
+- (UIView * _Nonnull)pickerView:(UIPickerView * _Nonnull)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView * _Nullable)view SWIFT_WARN_UNUSED_RESULT;
+- (void)pickerView:(UIPickerView * _Nonnull)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component;
+@end
+
+
+SWIFT_CLASS("_TtC12cryptography20HSAPersianPickerView")
+@interface HSAPersianPickerView : UIView
+@property (nonatomic, weak) IBOutlet HSAPersianDatePickerView * _Null_unspecified pdPicker;
+@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
+@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified confirmButton;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (IBAction)didTapCancel:(id _Nonnull)sender;
+- (IBAction)didTapOk:(id _Nonnull)sender;
+@end
+
+
+SWIFT_CLASS("_TtC12cryptography13HSAShadowView")
+@interface HSAShadowView : CustomView
+@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 @end
 
 @class NSURLSession;
@@ -3486,7 +3556,7 @@ SWIFT_CLASS("_TtC12cryptography3NFX")
 - (void)stop;
 - (void)motionDetected;
 - (BOOL)isStarted SWIFT_WARN_UNUSED_RESULT;
-- (void)setCachePolicy:(enum NSURLCacheStoragePolicy)policy;
+- (void)setCachePolicy:(NSURLCacheStoragePolicy)policy;
 - (void)setGesture:(enum ENFXGesture)gesture;
 - (void)show;
 - (void)hide;
@@ -3781,33 +3851,6 @@ SWIFT_CLASS("_TtC12cryptography27NSURLSessionPinningDelegate")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
-
-/// Activity indicator view with nice animations
-SWIFT_CLASS("_TtC12cryptography23NVActivityIndicatorView")
-@interface NVActivityIndicatorView : UIView
-@property (nonatomic, copy) IBInspectable NSString * _Nonnull typeName SWIFT_UNAVAILABLE_MSG("This property is reserved for Interface Builder. Use 'type' instead.");
-/// Color of activity indicator view.
-@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
-/// Padding of activity indicator view.
-@property (nonatomic) IBInspectable CGFloat padding;
-/// Returns an object initialized from data in a given unarchiver.
-/// self, initialized using the data in decoder.
-/// \param decoder an unarchiver object.
-///
-///
-/// returns:
-/// self, initialized using the data in decoder.
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-/// Returns the natural size for the receiving view, considering only properties of the view itself.
-/// A size indicating the natural size for the receiving view based on its intrinsic properties.
-///
-/// returns:
-/// A size indicating the natural size for the receiving view based on its intrinsic properties.
-@property (nonatomic, readonly) CGSize intrinsicContentSize;
-@property (nonatomic) CGRect bounds;
-- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
-@end
-
 @class NSURLSessionWebSocketTask;
 
 SWIFT_CLASS("_TtC12cryptography12NativeEngine") SWIFT_AVAILABILITY(tvos,introduced=13.0) SWIFT_AVAILABILITY(watchos,introduced=6.0) SWIFT_AVAILABILITY(ios,introduced=13.0) SWIFT_AVAILABILITY(macos,introduced=10.15)
@@ -3955,41 +3998,6 @@ SWIFT_CLASS("_TtC12cryptography21PaymentViewController")
 @end
 
 
-IB_DESIGNABLE
-SWIFT_CLASS("_TtC12cryptography21PersianDatePickerView")
-@interface PersianDatePickerView : UIView
-@property (nonatomic, strong) IBInspectable UIColor * _Nonnull fontColor;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (void)layoutSubviews;
-@end
-
-@class UIPickerView;
-
-@interface PersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDataSource>
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView * _Nonnull)pickerView SWIFT_WARN_UNUSED_RESULT;
-- (NSInteger)pickerView:(UIPickerView * _Nonnull)pickerView numberOfRowsInComponent:(NSInteger)component SWIFT_WARN_UNUSED_RESULT;
-@end
-
-
-@interface PersianDatePickerView (SWIFT_EXTENSION(cryptography)) <UIPickerViewDelegate>
-- (UIView * _Nonnull)pickerView:(UIPickerView * _Nonnull)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView * _Nullable)view SWIFT_WARN_UNUSED_RESULT;
-- (void)pickerView:(UIPickerView * _Nonnull)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component;
-@end
-
-
-SWIFT_CLASS("_TtC12cryptography17PersianPickerView")
-@interface PersianPickerView : UIView
-@property (nonatomic, weak) IBOutlet PersianDatePickerView * _Null_unspecified pdPicker;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified cancelButton;
-@property (nonatomic, weak) IBOutlet UIButton * _Null_unspecified confirmButton;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-- (IBAction)didTapCancel:(id _Nonnull)sender;
-- (IBAction)didTapOk:(id _Nonnull)sender;
-@end
-
-
 SWIFT_CLASS("_TtC12cryptography10PlayerView")
 @interface PlayerView : UIView
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layerClass;)
@@ -4016,11 +4024,11 @@ SWIFT_CLASS("_TtC12cryptography32PopUpBasedOnSocketViewController")
 
 
 
+
 @interface PopUpBasedOnSocketViewController (SWIFT_EXTENSION(cryptography)) <UIViewControllerTransitioningDelegate>
 - (id <UIViewControllerAnimatedTransitioning> _Nullable)animationControllerForPresentedController:(UIViewController * _Nonnull)presented presentingController:(UIViewController * _Nonnull)presenting sourceController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 - (id <UIViewControllerAnimatedTransitioning> _Nullable)animationControllerForDismissedController:(UIViewController * _Nonnull)dismissed SWIFT_WARN_UNUSED_RESULT;
 @end
-
 
 @class UICollectionView;
 @class UICollectionViewCell;
@@ -4264,14 +4272,6 @@ SWIFT_CLASS("_TtC12cryptography21SettingViewController")
 @end
 
 
-SWIFT_CLASS("_TtC12cryptography10ShadowView")
-@interface ShadowView : CustomView
-@property (nonatomic, strong) IBInspectable UIColor * _Nonnull color;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
 SWIFT_CLASS("_TtC12cryptography15SignContentView")
 @interface SignContentView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
@@ -4444,10 +4444,10 @@ SWIFT_CLASS("_TtC12cryptography32TransactionHistoryViewController")
 @end
 
 
-
 @interface TransactionHistoryViewController (SWIFT_EXTENSION(cryptography)) <UIViewControllerTransitioningDelegate>
 - (UIPresentationController * _Nullable)presentationControllerForPresentedViewController:(UIViewController * _Nonnull)presented presentingViewController:(UIViewController * _Nullable)presenting sourceViewController:(UIViewController * _Nonnull)source SWIFT_WARN_UNUSED_RESULT;
 @end
+
 
 
 
@@ -4510,11 +4510,11 @@ SWIFT_CLASS("_TtC12cryptography35TransactionTypeFilterViewController")
 @end
 
 
-
 @interface UITextField (SWIFT_EXTENSION(cryptography))
 @property (nonatomic) IBInspectable BOOL doneAccessory;
 - (void)doneButtonAction;
 @end
+
 
 
 
@@ -4542,12 +4542,12 @@ SWIFT_CLASS("_TtC12cryptography35TransactionTypeFilterViewController")
 
 
 @interface UIViewController (SWIFT_EXTENSION(cryptography))
-- (void)close;
+- (void)dismissKeyboard;
 @end
 
 
 @interface UIViewController (SWIFT_EXTENSION(cryptography))
-- (void)dismissKeyboard;
+- (void)close;
 @end
 
 
