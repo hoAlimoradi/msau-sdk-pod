@@ -1259,7 +1259,7 @@ SWIFT_CLASS("_TtC12cryptography3NFX")
 - (void)stop;
 - (void)motionDetected;
 - (BOOL)isStarted SWIFT_WARN_UNUSED_RESULT;
-- (void)setCachePolicy:(NSURLCacheStoragePolicy)policy;
+- (void)setCachePolicy:(enum NSURLCacheStoragePolicy)policy;
 - (void)setGesture:(enum ENFXGesture)gesture;
 - (void)show;
 - (void)hide;
